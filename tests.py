@@ -17,21 +17,24 @@ class TextInputTest(TestCase):
             {
                 "input": "a1",
                 "column": "a",
-                "row" : "1",
+                "row" : 1,
             },
             {
                 "input": "c4",
                 "column": "c",
-                "row" : "4",
+                "row" : 4,
             },
             {
-                "input": "36",
+                "input": "z6",
                 "throws_exception": True,
             },
             {
                 "input": "8p",
-                "column": "c",
-                "row" : "4",
+                "throws_exception": True,
+            },
+            {
+                "input": "",
+                "throws_exception": True,
             },
         ]
 
