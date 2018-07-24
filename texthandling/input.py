@@ -7,7 +7,27 @@ class TextInput(object):
         """Tries to convert the location and return a dict.
         Throws an InvalidLocationException if it can't interpret.
         """
+        try:
+            return TextInput.parse_chess_location(string_location)
+        except InvalidLocationException:
+            raise
 
+    @staticmethod
+    def parse_location(string_location):
+        """Given a string representing a checkers location, return a dict with the row and column.
+        Raises a InvalidLocationException if it fails.
+        """
+
+        # TODO Convert it into an integer. Raise an error if it fails.
+
+        # TODO Copy code from your board stuff.
+        pass
+
+    @staticmethod
+    def parse_chess_location(string_location):
+        """Given a string representing a location on a chess board, try to return the row and column.
+        Raises a InvalidLocationException if it fails.
+        """
         # The first character should be a letter.
         try:
             raw_column = string_location[0]

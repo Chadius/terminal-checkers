@@ -13,6 +13,8 @@ class TextInputTest(TestCase):
     def test_parse_location(self):
         """Confirm you understand the string representing the location.
         """
+
+        # TODO: locations should be checkers locations. columns should be letters.
         string_to_location = [
             {
                 "input": "a1",
@@ -66,3 +68,26 @@ class TextInputTest(TestCase):
                         context = datum
                     )
                 )
+
+# TODO, you'll have to add the official numbers for positions on the board
+class BoardValidation(TestCase):
+    """Make sure the board is valid.
+    """
+    def setUp(self):
+        # TODO: Create board object
+        pass
+
+    def test_initial_board_is_valid(self):
+        """Confirm the initial board layout is valid.
+        """
+        pass
+
+    def test_pieces_must_stay_on_one_color(self):
+        """All pieces should be on the "black" squares, like a1.
+        """
+        pass
+
+    def test_max_one_selected_space(self):
+        """No more than one space should be selected.
+        """
+        pass
