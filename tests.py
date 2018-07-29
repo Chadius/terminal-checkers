@@ -18,24 +18,32 @@ class TextInputTest(TestCase):
         string_to_location = [
             {
                 "input": "a1",
-                "column": "a",
+                "column": 1,
                 "row" : 1,
+                "position": 29,
             },
             {
-                "input": "c4",
-                "column": "c",
-                "row" : 4,
+                "input": "c5",
+                "column": 3,
+                "row" : 5,
+                "position": 14,
             },
             {
                 "input": "z6",
                 "throws_exception": True,
             },
             {
-                "input": "8p",
-                "throws_exception": True,
+                "input": "8",
+                "column": 7,
+                "row" : 7,
+                "position": 8,
             },
             {
                 "input": "",
+                "throws_exception": True,
+            },
+            {
+                "input": "a4",
                 "throws_exception": True,
             },
         ]
@@ -65,6 +73,15 @@ class TextInputTest(TestCase):
                     "Expected column {expected_column} but got {actual_column} instead. Context: {context}".format(
                         expected_column = datum["column"],
                         actual_column = location["column"],
+                        context = datum
+                    )
+                )
+                self.assertEqual(
+                    location["position"],
+                    datum["position"],
+                    "Expected position {expected_position} but got {actual_position} instead. Context: {context}".format(
+                        expected_position = datum["position"],
+                        actual_position = location["position"],
                         context = datum
                     )
                 )
