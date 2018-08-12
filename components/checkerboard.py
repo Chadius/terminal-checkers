@@ -30,12 +30,27 @@ class Checker(object):
         """
         self.is_king = True
 
-# TODO Checkerboard contains multiple Checkers.
-# - knows the size of the board
-# - knows checker locations
+class Checkerboard(object):
+    """ Checkerboard contains multiple Checkers.
+    - knows the size of the board
+    - knows checker locations
+    """
+    def __init__(self, *args, **kwargs):
+        self.columns = None
+        self.rows = None
+
+    def reset_board(self):
+        pass
+
+    def get_all_pieces_by_location(self):
+        return {}
+
+    def location_to_coordinates(self, location):
+        return {}
 
 # TODO CheckersGame contains Checkerboard
 # - knows whose turn it is
 # - knows who won
 # - knows move history
 # - knows valid moves
+
