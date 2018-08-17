@@ -159,17 +159,17 @@ class CheckerboardTest(TestCase):
 
         # Black pieces
         for loc in range(1, 12):
-            self.assertTrue(loc in all_piece_locations)
-            self.assertEqual(all_piece_locations["location"], loc)
-            self.assertEqual(all_piece_locations["color"], "Black")
-            self.assertEqual(all_piece_locations["type"], "Man")
+            self.assertTrue(loc in all_piece_locations, "Can't find location {loc}".format(loc=loc))
+            self.assertEqual(all_piece_locations[loc]["location"], loc)
+            self.assertEqual(all_piece_locations[loc]["color"], "Black")
+            self.assertEqual(all_piece_locations[loc]["type"], "Man")
 
         # White pieces
         for loc in range(21, 32):
-            self.assertTrue(loc in all_piece_locations)
-            self.assertEqual(all_piece_locations["location"], loc)
-            self.assertEqual(all_piece_locations["color"], "White")
-            self.assertEqual(all_piece_locations["type"], "Man")
+            self.assertTrue(loc in all_piece_locations, "Can't find location {loc}".format(loc=loc))
+            self.assertEqual(all_piece_locations[loc]["location"], loc)
+            self.assertEqual(all_piece_locations[loc]["color"], "White")
+            self.assertEqual(all_piece_locations[loc]["type"], "Man")
 
     def test_location_to_coordinates(self):
         """Confirm the location correctly translates to coordinates.
