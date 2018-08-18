@@ -6,6 +6,7 @@ from texthandling.input import InvalidLocationException
 
 from components.checkerboard import Checker
 from components.checkerboard import Checkerboard
+from components.checkerboard import CheckerGame
 
 class TextInputTest(TestCase):
     """Confirm you can interpret and understand text commands.
@@ -316,3 +317,84 @@ class CheckerboardTest(TestCase):
                     actual = coordinate,
                 )
             )
+
+class CheckerGameTest(TestCase):
+    """Check the CheckerGame's model and controller actions.
+    """
+
+    def setUp(self):
+        self.game = CheckerGame()
+
+    def test_current_turn(self):
+        """White moves first.
+        """
+        self.assertEqual(self.game.get_current_turn(), "White")
+
+    def test_move_history_starts_blank(self):
+        """Confirm the move history starts blank.
+        """
+        history = self.game.get_move_history()
+        self.assertEqual(history, [])
+
+    def test_legal_moves(self):
+        """Return all of the legal moves the White team can perform.
+        """
+        game_moves = self.game.get_current_legal_moves()
+
+        self.assertEqual(len(game_moves), 7)
+
+        expected_moves_by_start_location = {
+            9 : [],
+            10 : [],
+            11 : [],
+            12 : [],
+        }
+
+        actual_moves_by_start_location = {}
+
+        # Make sure every reported legal move is in the list of expected moves.
+        for move in game_moves:
+            # Make sure the start point is legal.
+            start_loc = move["start"]
+            self.assertTrue(
+                start_loc in expected_moves_by_start_location,
+                "No legal move starts with {loc}".format(
+                    loc=start_loc
+                )
+            )
+
+            if not start_loc in actual_moves_by_start_location:
+                actual_moves_by_start_location[start_loc] = []
+
+            # Make sure the same move was not added twice.
+            end_loc = move["end"]
+            self.assertFalse(
+                end_loc in actual_moves_by_start_location[start_loc],
+                "{start} - {end} should not be a legal move.".format(
+                    start=start_loc,
+                    end=end_loc,
+                )
+            )
+
+            actual_moves_by_start_location[start_loc].append(end_loc)
+
+        # Make sure every expected move has been accounted for.
+        for start_loc in expected_moves_by_start_location:
+            self.assertTrue(
+                start_loc in actual_moves_by_start_location,
+                "{start} not found in actual moves".format(
+                    start = start_loc
+                )
+            )
+
+            # Make sure they have the same number of end points.
+            self.assertEqual(
+                len(actual_moves_by_start_location[start_loc]),
+                len(expected_moves_by_start_location[start_loc]),
+                "Legal moves starting with {start}: Expected {expected}, Actual {actual}".format(
+                    expected = len(expected_moves_by_start_location[start_loc]),
+                    actual = len(actual_moves_by_start_location[start_loc]),
+                )
+            )
+
+            # Both lists have the same contents.

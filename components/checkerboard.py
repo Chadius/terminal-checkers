@@ -107,7 +107,37 @@ class Checkerboard(object):
             "column": column,
         }
 
-# TODO CheckersGame contains Checkerboard
+class CheckerGame(object):
+    """A Game of Checkers tracks the board, the turn and determines valid moves.
+    """
+    def __init__(self, *args, **kwargs):
+        self.board = Checkerboard()
+        self.current_turn = None
+        self.move_history = []
+
+        self.reset_game()
+
+    def reset_game(self):
+        """Resets the game.
+        """
+        self.current_turn = "White"
+        self.move_history = []
+        self.board.reset_board()
+
+    def get_current_turn(self):
+        return self.current_turn
+
+    def get_move_history(self):
+        return self.move_history
+
+    def get_current_legal_moves(self):
+        """Look at the current turn and the board to determine all of the legal moves on the board.
+        Returns a list of dicts.
+        start - Integer containing the start location
+        end - Integer containing the end location
+        """
+        return []
+        # TODO CheckersGame contains Checkerboard
 # - knows whose turn it is
 # - knows who won
 # - knows move history
