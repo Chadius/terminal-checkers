@@ -159,14 +159,14 @@ class CheckerboardTest(TestCase):
         all_piece_locations = self.board.get_all_pieces_by_location()
 
         # Black pieces
-        for loc in range(1, 12):
+        for loc in range(1, 12+1):
             self.assertTrue(loc in all_piece_locations, "Can't find location {loc}".format(loc=loc))
             self.assertEqual(all_piece_locations[loc]["location"], loc)
             self.assertEqual(all_piece_locations[loc]["color"], "Black")
             self.assertEqual(all_piece_locations[loc]["type"], "Man")
 
         # White pieces
-        for loc in range(21, 32):
+        for loc in range(21, 32+1):
             self.assertTrue(loc in all_piece_locations, "Can't find location {loc}".format(loc=loc))
             self.assertEqual(all_piece_locations[loc]["location"], loc)
             self.assertEqual(all_piece_locations[loc]["color"], "White")

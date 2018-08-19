@@ -59,7 +59,7 @@ class Checkerboard(object):
 
         # Create the Black pieces
         # They inhabit locations 1-12.
-        for loc in range(1, 12):
+        for loc in range(1, 12+1):
             newchecker = Checker()
             newchecker.set_color("black")
             self.pieces_by_location[loc] = {
@@ -70,7 +70,7 @@ class Checkerboard(object):
 
         # Create the White pieces
         # They inhabit locations 21-32.
-        for loc in range(21, 32):
+        for loc in range(21, 32+1):
             newchecker = Checker()
             newchecker.set_color("white")
             self.pieces_by_location[loc] = {
@@ -136,8 +136,41 @@ class CheckerGame(object):
         start - Integer containing the start location
         end - Integer containing the end location
         """
+        # Whose turn is it, again?
+        current_turn = self.current_turn
+
+        # Ask the board for all of the pieces with that color.
+        all_pieces = self.board.get_all_pieces_by_location()
+        matching_pieces = [ v for k,v in all_pieces.items() if v["color"] == current_turn ]
+
+        # For each piece
+        all_legal_moves = []
+        for checker_info in matching_pieces:
+            # Ask each piece for its legal moves
+            legal_moves_for_piece = self.get_legal_moves_for_checker(checker_info)
+
+            # Add all of those locations to the results
+            all_legal_moves += legal_moves_for_piece
+
+        # Return all results.
+        return all_legal_moves
+
+    def get_legal_moves_for_checker(self, checker_info):
+        """Looks at the legal moves for the checker at the given location.
+        Returns a list of dicts. See get_current_legal_moves for a description.
+        """
+
+        # TODO Get the piece at the given location
+        # TODO Get all of its neighboring locations.
+        # TODO Man can only move forward.
+        # TODO Kings can move forward and backward.
+        # TODO Remove any pieces that are not legal.
+        # TODO For each neighbor, if the space is blank the piece can move there.
+        # TODO If the neighbor is occupied by a checker of its own color, it cannot move there.
+        ## TODO Check for jumps!
         return []
-        # TODO CheckersGame contains Checkerboard
+
+    # TODO CheckersGame contains Checkerboard
 # - knows whose turn it is
 # - knows who won
 # - knows move history
