@@ -84,6 +84,8 @@ class Checkerboard(object):
 
     def location_to_coordinates(self, location):
         """Convert location to coordinates.
+        Row is 1-8 (Row 1 is the top of Black's side.)
+        Column is 1-8 (Column 1 is on the left side.)
         """
 
         # If the location is not between 1-32, raise an exception
@@ -106,6 +108,11 @@ class Checkerboard(object):
             "row": row,
             "column": column,
         }
+
+    def coordinates_to_location(self, coordinates):
+        """Convert coordinates to location.
+        """
+        return 0
 
 class CheckerGame(object):
     """A Game of Checkers tracks the board, the turn and determines valid moves.
@@ -147,7 +154,7 @@ class CheckerGame(object):
         all_legal_moves = []
         for checker_info in matching_pieces:
             # Ask each piece for its legal moves
-            legal_moves_for_piece = self.get_legal_moves_for_checker(checker_info)
+            legal_moves_for_piece = self.get_legal_moves_for_checker(checker_info, all_pieces)
 
             # Add all of those locations to the results
             all_legal_moves += legal_moves_for_piece
@@ -155,20 +162,54 @@ class CheckerGame(object):
         # Return all results.
         return all_legal_moves
 
-    def get_legal_moves_for_checker(self, checker_info):
+    def get_legal_moves_for_checker(self, checker_info, all_pieces_info):
         """Looks at the legal moves for the checker at the given location.
         Returns a list of dicts. See get_current_legal_moves for a description.
         """
 
-        # TODO Get the piece at the given location
-        # TODO Get all of its neighboring locations.
-        # TODO Man can only move forward.
+        # Get the piece at the given location
+        color = checker_info["color"]
+        checker_type = checker_info["type"]
+
+        # Get all of its neighboring locations.
+        neighbors = []
+        # Get the row and column of the location
+        checker_coord = self.board.location_to_coordinates(checker_info["location"])
+
+        # Men can only move forward.
+        if color == "White":
+            new_row = checker_coord["row"] - 1
+        if color == "Black":
+            new_row = checker_coord["row"] + 1
+        neighbors.append({ "row": new_row, "column": checker_coord["column"] + 1})
+        neighbors.append({ "row": new_row, "column": checker_coord["column"] - 1})
+
         # TODO Kings can move forward and backward.
-        # TODO Remove any pieces that are not legal.
-        # TODO For each neighbor, if the space is blank the piece can move there.
+
+        # Remove any neighbor that are not on the board.
+        on_board_neighbors = []
+        for coord in neighbors:
+            if coord["row"] < 1:
+                continue
+            if coord["column"] < 1:
+                continue
+            if coord["row"] > self.board.rows:
+                continue
+            if coord["column"] > self.board.columns:
+                continue
+            on_board_neighbors.append(coord)
+
+        # For each neighbor, if the space is blank the piece can move there.
+        empty_spaces = []
+        for coord in on_board_neighbors:
+            loc = self.board.coordinates_to_location(coord)
+            if loc in all_pieces_info:
+                continue
+            empty_spaces.append(loc)
+
         # TODO If the neighbor is occupied by a checker of its own color, it cannot move there.
         ## TODO Check for jumps!
-        return []
+        return empty_spaces
 
     # TODO CheckersGame contains Checkerboard
 # - knows whose turn it is

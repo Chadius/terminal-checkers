@@ -172,138 +172,94 @@ class CheckerboardTest(TestCase):
             self.assertEqual(all_piece_locations[loc]["color"], "White")
             self.assertEqual(all_piece_locations[loc]["type"], "Man")
 
+    def test_coordinates_to_location(self):
+        """ Test you can convert coordinates to a location.
+        """
+        location_to_coordinates = {
+            1 : { "row": 8, "column": 2, },
+            2 : { "row": 8, "column": 4, },
+            3 : { "row": 8, "column": 6, },
+            4 : { "row": 8, "column": 8, },
+            5 : { "row": 7, "column": 1, },
+            6 : { "row": 7, "column": 3, },
+            7 : { "row": 7, "column": 5, },
+            8 : { "row": 7, "column": 7, },
+            9 : { "row": 6, "column": 2, },
+            10: { "row": 6, "column": 4, },
+            11: { "row": 6, "column": 6, },
+            12: { "row": 6, "column": 8, },
+            13: { "row": 5, "column": 1, },
+            14: { "row": 5, "column": 3, },
+            15: { "row": 5, "column": 5, },
+            16: { "row": 5, "column": 7, },
+            17: { "row": 4, "column": 2, },
+            18: { "row": 4, "column": 4, },
+            19: { "row": 4, "column": 6, },
+            20: { "row": 4, "column": 8, },
+            21: { "row": 3, "column": 1, },
+            22: { "row": 3, "column": 3, },
+            23: { "row": 3, "column": 5, },
+            24: { "row": 3, "column": 7, },
+            25: { "row": 2, "column": 2, },
+            26: { "row": 2, "column": 4, },
+            27: { "row": 2, "column": 6, },
+            28: { "row": 2, "column": 8, },
+            29: { "row": 1, "column": 1, },
+            30: { "row": 1, "column": 3, },
+            31: { "row": 1, "column": 5, },
+            32: { "row": 1, "column": 7, },
+        }
+
+        for loc in location_to_coordinates:
+            coords = location_to_coordinates[loc]
+            location = self.board.coordinates_to_location(coords)
+            self.assertEqual(
+                location,
+                loc,
+                "Location for coordinates at row {row} and column {col} do not match. Expected {expected}, Actual {actual}".format(
+                    row = coords["row"],
+                    col = coords["column"],
+                    expected = loc,
+                    actual = location,
+                )
+            )
+
     def test_location_to_coordinates(self):
         """Confirm the location correctly translates to coordinates.
         """
         location_to_coordinates = {
-            1 : {
-                "row": 8,
-                "column": 2,
-            },
-            2 : {
-                "row": 8,
-                "column": 4,
-            },
-            3 : {
-                "row": 8,
-                "column": 6,
-            },
-            4 : {
-                "row": 8,
-                "column": 8,
-            },
-            5 : {
-                "row": 7,
-                "column": 1,
-            },
-            6 : {
-                "row": 7,
-                "column": 3,
-            },
-            7 : {
-                "row": 7,
-                "column": 5,
-            },
-            8 : {
-                "row": 7,
-                "column": 7,
-            },
-            9 : {
-                "row": 6,
-                "column": 2,
-            },
-            10: {
-                "row": 6,
-                "column": 4,
-            },
-            11: {
-                "row": 6,
-                "column": 6,
-            },
-            12: {
-                "row": 6,
-                "column": 8,
-            },
-            13: {
-                "row": 5,
-                "column": 1,
-            },
-            14: {
-                "row": 5,
-                "column": 3,
-            },
-            15: {
-                "row": 5,
-                "column": 5,
-            },
-            16: {
-                "row": 5,
-                "column": 7,
-            },
-            17: {
-                "row": 4,
-                "column": 2,
-            },
-            18: {
-                "row": 4,
-                "column": 4,
-            },
-            19: {
-                "row": 4,
-                "column": 6,
-            },
-            20: {
-                "row": 4,
-                "column": 8,
-            },
-            21: {
-                "row": 3,
-                "column": 1,
-            },
-            22: {
-                "row": 3,
-                "column": 3,
-            },
-            23: {
-                "row": 3,
-                "column": 5,
-            },
-            24: {
-                "row": 3,
-                "column": 7,
-            },
-            25: {
-                "row": 2,
-                "column": 2,
-            },
-            26: {
-                "row": 2,
-                "column": 4,
-            },
-            27: {
-                "row": 2,
-                "column": 6,
-            },
-            28: {
-                "row": 2,
-                "column": 8,
-            },
-            29: {
-                "row": 1,
-                "column": 1,
-            },
-            30: {
-                "row": 1,
-                "column": 3,
-            },
-            31: {
-                "row": 1,
-                "column": 5,
-            },
-            32: {
-                "row": 1,
-                "column": 7,
-            },
+            1 : { "row": 8, "column": 2, },
+            2 : { "row": 8, "column": 4, },
+            3 : { "row": 8, "column": 6, },
+            4 : { "row": 8, "column": 8, },
+            5 : { "row": 7, "column": 1, },
+            6 : { "row": 7, "column": 3, },
+            7 : { "row": 7, "column": 5, },
+            8 : { "row": 7, "column": 7, },
+            9 : { "row": 6, "column": 2, },
+            10: { "row": 6, "column": 4, },
+            11: { "row": 6, "column": 6, },
+            12: { "row": 6, "column": 8, },
+            13: { "row": 5, "column": 1, },
+            14: { "row": 5, "column": 3, },
+            15: { "row": 5, "column": 5, },
+            16: { "row": 5, "column": 7, },
+            17: { "row": 4, "column": 2, },
+            18: { "row": 4, "column": 4, },
+            19: { "row": 4, "column": 6, },
+            20: { "row": 4, "column": 8, },
+            21: { "row": 3, "column": 1, },
+            22: { "row": 3, "column": 3, },
+            23: { "row": 3, "column": 5, },
+            24: { "row": 3, "column": 7, },
+            25: { "row": 2, "column": 2, },
+            26: { "row": 2, "column": 4, },
+            27: { "row": 2, "column": 6, },
+            28: { "row": 2, "column": 8, },
+            29: { "row": 1, "column": 1, },
+            30: { "row": 1, "column": 3, },
+            31: { "row": 1, "column": 5, },
+            32: { "row": 1, "column": 7, },
         }
 
         for loc in location_to_coordinates:
