@@ -111,8 +111,34 @@ class Checkerboard(object):
 
     def coordinates_to_location(self, coordinates):
         """Convert coordinates to location.
+        Returns None if there is no possible location.
         """
-        return 0
+        row = coordinates["row"]
+        col = coordinates["column"]
+
+        # Make sure the row and columns are within the rows and columns.
+        if row < 1 or row > self.rows:
+            return None
+
+        if col < 1 or col > self.columns:
+            return None
+
+        # If the row is even, make sure the column is even
+        if row % 2 == 0 and col % 2 != 0:
+            return None
+
+        # If the row is odd, make sure the column is odd
+        if row % 2 != 0 and col % 2 == 0:
+            return None
+
+        # Figure out the location range based on the row.
+        location = (row - 1) * 4 # TODO flip the rows! Row 8 starts with 0.
+
+        # Convert the column to a range from 0-3 and add it to the row location range.
+        location += int((col - 1)  / 2) + 1
+
+        # Return the location.
+        return location
 
 class CheckerGame(object):
     """A Game of Checkers tracks the board, the turn and determines valid moves.
