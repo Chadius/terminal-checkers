@@ -132,7 +132,7 @@ class Checkerboard(object):
             return None
 
         # Figure out the location range based on the row.
-        location = (row - 1) * 4 # TODO flip the rows! Row 8 starts with 0.
+        location = (8 - row) * 4
 
         # Convert the column to a range from 0-3 and add it to the row location range.
         location += int((col - 1)  / 2) + 1
@@ -204,12 +204,11 @@ class CheckerGame(object):
 
         # Men can only move forward.
         if color == "White":
-            new_row = checker_coord["row"] - 1
-        if color == "Black":
             new_row = checker_coord["row"] + 1
+        if color == "Black":
+            new_row = checker_coord["row"] - 1
         neighbors.append({ "row": new_row, "column": checker_coord["column"] + 1})
         neighbors.append({ "row": new_row, "column": checker_coord["column"] - 1})
-
         # TODO Kings can move forward and backward.
 
         # Remove any neighbor that are not on the board.
@@ -235,6 +234,14 @@ class CheckerGame(object):
 
         # TODO If the neighbor is occupied by a checker of its own color, it cannot move there.
         ## TODO Check for jumps!
+
+        # TODO Format the moves.
+        legal_moves = []
+        for destination in empty_spaces:
+            legal_moves.append({
+                "start": ,
+                "end": ,
+            })
         return empty_spaces
 
     # TODO CheckersGame contains Checkerboard
