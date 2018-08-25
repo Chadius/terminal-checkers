@@ -56,31 +56,42 @@ class Checkerboard(object):
         self.columns = 8
         self.rows = 8
         self.pieces_by_location = {}
+        self.all_checkers = []
 
         # Create the Black pieces
         # They inhabit locations 1-12.
         for loc in range(1, 12+1):
             newchecker = Checker()
             newchecker.set_color("black")
-            self.pieces_by_location[loc] = {
-                "location": loc,
-                "color": newchecker.get_color(),
-                "type": newchecker.get_type(),
-            }
+            self.pieces_by_location[loc] = newchecker
+            self.all_checkers.append(newchecker)
 
         # Create the White pieces
         # They inhabit locations 21-32.
         for loc in range(21, 32+1):
             newchecker = Checker()
             newchecker.set_color("white")
-            self.pieces_by_location[loc] = {
-                "location": loc,
-                "color": newchecker.get_color(),
-                "type": newchecker.get_type(),
-            }
+            self.pieces_by_location[loc] = newchecker
+            self.all_checkers.append(newchecker)
 
     def get_all_pieces_by_location(self):
-        return self.pieces_by_location
+        """Returns a dict mapping locations with checkers
+        to a dict descibing them.
+
+        location
+        color
+        type
+        """
+        pieces_description = {}
+
+        for loc, checker in self.pieces_by_location.items():
+            pieces_description[loc] = {
+                "location": loc,
+                "color": checker.get_color(),
+                "type": checker.get_type(),
+            }
+
+        return pieces_description
 
     def location_to_coordinates(self, location):
         """Convert location to coordinates.
@@ -139,6 +150,40 @@ class Checkerboard(object):
 
         # Return the location.
         return location
+
+    def get_piece(self, location):
+        """Returns a dict describing the checker found at the given location.
+        Returns None if no piece is at the location OR the checker is captured.
+        """
+
+        # Get a description
+        pieces_description = self.get_all_pieces_by_location()
+
+        # See if there is no piece at this location.
+        if not location in pieces_description:
+            return None
+
+        # There is a checker here.
+        found_checker = pieces_description[location]
+
+        # return the description
+        return found_checker
+
+    def capture_piece(self, location):
+        """Capture the piece found at the given location.
+        Returns True if successful.
+        """
+        # Is there a piece at that location?
+        if not location in self.pieces_by_location:
+            return False
+
+        # Mark the piece as captured.
+        checker = self.pieces_by_location[location]
+        checker.capture()
+
+        # Remove from the board.
+        del[self.pieces_by_location[location]]
+        return True
 
 class CheckerGame(object):
     """A Game of Checkers tracks the board, the turn and determines valid moves.

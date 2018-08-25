@@ -274,6 +274,28 @@ class CheckerboardTest(TestCase):
                 )
             )
 
+    def test_get_piece_not_captured(self):
+        """ You can read the board and see non-captured pieces.
+        """
+        # Reset the board
+        self.board.reset_board()
+
+        # Verify you see a captured piece there.
+        piece = self.board.get_piece(1)
+        self.assertEqual(piece["color"], "Black")
+
+        # Capture the piece.
+        self.board.capture_piece(1)
+
+        # Verify you don't see a captured piece there.
+        piece = self.board.get_piece(1)
+        self.assertIsNone(piece)
+
+        # Verify the piece isn't in the "all" pieces
+        all_piece_locations = self.board.get_all_pieces_by_location()
+        self.assertFalse(1 in all_piece_locations)
+
+# You can load board positions.
 class CheckerGameTest(TestCase):
     """Check the CheckerGame's model and controller actions.
     """
@@ -430,3 +452,54 @@ class CheckerGameTest(TestCase):
             )
 
             # Both lists have the same contents.
+
+# JumpingPieceTests
+# Verifies the board can detect jumps.
+# S = Start point
+# B = Black piece
+# W = White piece
+# L = Where the Start piece Lands after jumping
+# Most of these tests use a White piece.
+
+# |-|-|-|
+# |-|-|-|
+# |-|-|-|
+# White piece at S can jump up and right
+
+# |-|-|-|
+# |-|-|-|
+# |-|-|-|
+# White piece at S can jump up and left.
+
+# |-|-|-|
+# |-|-|-|
+# |-|-|-|
+# Black piece at S can jump.
+
+# |-|-|-|
+# |-|-|-|
+# |-|-|-|
+# White piece at S cannot jump, the jumped piece is the same color.
+
+# |-|-|-|
+# |-|-|-|
+# |-|-|-|
+# S piece cannot jump because they would land in an offboard column.
+
+# |-|-|-|
+# |-|-|-|
+# |-|-|-|
+# S piece cannot jump because they would land in an invalid row.
+
+# |-|-|-|
+# |-|-|-|
+# |-|-|-|
+# S piece cannot jump because the landing is blocked.
+
+# |-|-|-|-|-|
+# |-|-|-|-|-|
+# |-|-|-|-|-|
+# |-|-|-|-|-|
+# |-|-|-|-|-|
+# Multijumps are possible.
+
