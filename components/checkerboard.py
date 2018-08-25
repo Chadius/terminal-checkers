@@ -239,10 +239,10 @@ class CheckerGame(object):
         legal_moves = []
         for destination in empty_spaces:
             legal_moves.append({
-                "start": ,
-                "end": ,
+                "start": checker_info["location"],
+                "end": destination,
             })
-        return empty_spaces
+        return legal_moves
 
     # TODO CheckersGame contains Checkerboard
 # - knows whose turn it is

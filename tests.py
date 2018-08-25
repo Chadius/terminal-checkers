@@ -300,10 +300,10 @@ class CheckerGameTest(TestCase):
         self.assertEqual(len(game_moves), 7)
 
         expected_moves_by_start_location = {
-            9 : [],
-            10 : [],
-            11 : [],
-            12 : [],
+            21 : [17],
+            22 : [17, 18],
+            23 : [18, 19],
+            24 : [19, 20],
         }
 
         actual_moves_by_start_location = {}
@@ -348,6 +348,7 @@ class CheckerGameTest(TestCase):
                 len(actual_moves_by_start_location[start_loc]),
                 len(expected_moves_by_start_location[start_loc]),
                 "Legal moves starting with {start}: Expected {expected}, Actual {actual}".format(
+                    start = start_loc,
                     expected = len(expected_moves_by_start_location[start_loc]),
                     actual = len(actual_moves_by_start_location[start_loc]),
                 )
