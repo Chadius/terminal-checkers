@@ -160,6 +160,14 @@ class CheckerGame(object):
     def get_current_turn(self):
         return self.current_turn
 
+    def end_turn(self):
+        """Swaps between White and Black teams.
+        """
+        if self.current_turn == "White":
+            self.current_turn = "Black"
+        else:
+            self.current_turn = "White"
+
     def get_move_history(self):
         return self.move_history
 

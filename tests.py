@@ -292,7 +292,7 @@ class CheckerGameTest(TestCase):
         history = self.game.get_move_history()
         self.assertEqual(history, [])
 
-    def test_legal_moves(self):
+    def test_legal_moves_for_white(self):
         """Return all of the legal moves the White team can perform.
         """
         game_moves = self.game.get_current_legal_moves()
@@ -304,6 +304,81 @@ class CheckerGameTest(TestCase):
             22 : [17, 18],
             23 : [18, 19],
             24 : [19, 20],
+        }
+
+        actual_moves_by_start_location = {}
+
+        # Make sure every reported legal move is in the list of expected moves.
+        for move in game_moves:
+            # Make sure the start point is legal.
+            start_loc = move["start"]
+            self.assertTrue(
+                start_loc in expected_moves_by_start_location,
+                "No legal move starts with {loc}".format(
+                    loc=start_loc
+                )
+            )
+
+            if not start_loc in actual_moves_by_start_location:
+                actual_moves_by_start_location[start_loc] = []
+
+            # Make sure the same move was not added twice.
+            end_loc = move["end"]
+            self.assertFalse(
+                end_loc in actual_moves_by_start_location[start_loc],
+                "{start} - {end} should not be a legal move.".format(
+                    start=start_loc,
+                    end=end_loc,
+                )
+            )
+
+            actual_moves_by_start_location[start_loc].append(end_loc)
+
+        # Make sure every expected move has been accounted for.
+        for start_loc in expected_moves_by_start_location:
+            self.assertTrue(
+                start_loc in actual_moves_by_start_location,
+                "{start} not found in actual moves".format(
+                    start = start_loc
+                )
+            )
+
+            # Make sure they have the same number of end points.
+            self.assertEqual(
+                len(actual_moves_by_start_location[start_loc]),
+                len(expected_moves_by_start_location[start_loc]),
+                "Legal moves starting with {start}: Expected {expected}, Actual {actual}".format(
+                    start = start_loc,
+                    expected = len(expected_moves_by_start_location[start_loc]),
+                    actual = len(actual_moves_by_start_location[start_loc]),
+                )
+            )
+
+            # Both lists have the same contents.
+
+    def test_end_turn(self):
+        """Tests that you can change turns.
+        """
+        self.assertEqual(self.game.get_current_turn(), "White")
+        self.game.end_turn()
+        self.assertEqual(self.game.get_current_turn(), "Black")
+        self.game.end_turn()
+        self.assertEqual(self.game.get_current_turn(), "White")
+
+    def test_legal_moves_for_black(self):
+        """Return all of the legal moves the Black team can perform.
+        """
+        self.game.end_turn()
+
+        game_moves = self.game.get_current_legal_moves()
+
+        self.assertEqual(len(game_moves), 7)
+
+        expected_moves_by_start_location = {
+            9 : [13, 14],
+            10 : [14, 15],
+            11 : [15, 16],
+            12 : [16],
         }
 
         actual_moves_by_start_location = {}
