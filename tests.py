@@ -461,45 +461,45 @@ class CheckerGameTest(TestCase):
 # L = Where the Start piece Lands after jumping
 # Most of these tests use a White piece.
 
-# |-|-|-|
-# |-|-|-|
-# |-|-|-|
+# |-|-|L|
+# |-|B|-|
+# |S|-|-|
 # White piece at S can jump up and right
 
 # |-|-|-|
-# |-|-|-|
-# |-|-|-|
+# |-|W|-|
+# |S|-|-|
 # White piece at S can jump up and left.
 
-# |-|-|-|
-# |-|-|-|
-# |-|-|-|
+# |S|-|-|
+# |-|W|-|
+# |-|-|L|
 # Black piece at S can jump.
 
 # |-|-|-|
-# |-|-|-|
-# |-|-|-|
+# |-|W|-|
+# |S|-|-|
 # White piece at S cannot jump, the jumped piece is the same color.
 
 # |-|-|-|
-# |-|-|-|
-# |-|-|-|
+# |-|-|B|
+# |-|S|-|
 # S piece cannot jump because they would land in an offboard column.
 
-# |-|-|-|
-# |-|-|-|
+# |-|B|-|
+# |S|-|-|
 # |-|-|-|
 # S piece cannot jump because they would land in an invalid row.
 
-# |-|-|-|
-# |-|-|-|
-# |-|-|-|
+# |-|-|B|
+# |-|B|-|
+# |S|-|-|
 # S piece cannot jump because the landing is blocked.
 
-# |-|-|-|-|-|
-# |-|-|-|-|-|
-# |-|-|-|-|-|
-# |-|-|-|-|-|
-# |-|-|-|-|-|
-# Multijumps are possible.
+# |-|-|-|-|L|
+# |-|-|-|B|-|
+# |-|-|l|-|-|
+# |-|B|-|-|-|
+# |S|-|-|-|-|
+# Multijumps are possible. S will jump to l and then L.
 
