@@ -30,6 +30,11 @@ class Checker(object):
         """
         self.is_king = True
 
+    def change_is_king(self, is_king):
+        """Change this piece's king status.
+        """
+        self.is_king = is_king
+
     def get_color(self):
         return self.color
 
@@ -48,6 +53,7 @@ class Checkerboard(object):
         self.rows = None
         self.pieces_by_location = {}
         self.reset_board()
+        self.all_checkers = []
 
     def reset_board(self):
         """Reset all of the pieces on the board.
@@ -73,6 +79,35 @@ class Checkerboard(object):
             newchecker.set_color("white")
             self.pieces_by_location[loc] = newchecker
             self.all_checkers.append(newchecker)
+
+    def arrange_board(self, piece_by_location):
+        """Reset the board and rearrange the pieces.
+        The key is the location.
+        The value is a dict.
+        type
+        color
+        """
+
+        # Clear all of the pieces by location.
+        self.all_checkers = []
+        self.pieces_by_location = {}
+
+        # For each location
+        for location, description in piece_by_location.items():
+            # Get the next captured piece
+            cap_piece = Checker()
+
+            # Set its color and type
+            cap_piece.set_color(description["color"])
+
+            checker_type = description["type"].lower()
+            if checker_type == "king":
+                cap_piece.promote_to_king()
+            else:
+                cap_piece.change_is_king(False)
+
+            # Set the piece location
+            self.pieces_by_location[location] = cap_piece
 
     def get_all_pieces_by_location(self):
         """Returns a dict mapping locations with checkers

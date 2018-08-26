@@ -295,7 +295,46 @@ class CheckerboardTest(TestCase):
         all_piece_locations = self.board.get_all_pieces_by_location()
         self.assertFalse(1 in all_piece_locations)
 
-# You can load board positions.
+    def test_load_board_formation(self):
+        """ You can load board positions.
+        """
+
+        # Place pieces using a list of pieces.
+        self.board.arrange_board({
+            11: {
+                "color": "white",
+                "type" : "man",
+            },
+            8: {
+                "color": "black",
+                "type" : "man",
+            },
+            4: {
+                "color": "black",
+                "type" : "king",
+            },
+        })
+
+        # Make sure there are 3 pieces.
+        all_piece_locations = self.board.get_all_pieces_by_location()
+        self.assertEqual(len(all_piece_locations.keys()), 3)
+
+        # Make sure the correct pieces are at the correct spots.
+        self.assertTrue(8 in all_piece_locations)
+        self.assertEqual(all_piece_locations[8]["location"], 8)
+        self.assertEqual(all_piece_locations[8]["color"], "Black")
+        self.assertEqual(all_piece_locations[8]["type"], "Man")
+
+        self.assertTrue(4 in all_piece_locations)
+        self.assertEqual(all_piece_locations[4]["location"], 4)
+        self.assertEqual(all_piece_locations[4]["color"], "Black")
+        self.assertEqual(all_piece_locations[4]["type"], "King")
+
+        self.assertTrue(11 in all_piece_locations)
+        self.assertEqual(all_piece_locations[11]["location"], 11)
+        self.assertEqual(all_piece_locations[11]["color"], "White")
+        self.assertEqual(all_piece_locations[11]["type"], "Man")
+
 class CheckerGameTest(TestCase):
     """Check the CheckerGame's model and controller actions.
     """
