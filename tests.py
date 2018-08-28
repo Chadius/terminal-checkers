@@ -492,18 +492,143 @@ class CheckerGameTest(TestCase):
 
             # Both lists have the same contents.
 
-# JumpingPieceTests
-# Verifies the board can detect jumps.
-# S = Start point
-# B = Black piece
-# W = White piece
-# L = Where the Start piece Lands after jumping
-# Most of these tests use a White piece.
+class JumpingPieceTests(TestCase):
+    # Verifies the board can detect jumps.
+    # S = Start point
+    # B = Black piece
+    # W = White piece
+    # L = Where the Start piece Lands after jumping
+    # Most of these tests use a White piece.
 
-# |-|-|L|
-# |-|B|-|
-# |S|-|-|
-# White piece at S can jump up and right
+    def setUp(self):
+        self.game = CheckerGame()
+
+    def test_peek(self):
+        """Tests the peek functionality.
+        """
+        # |-|-|L|
+        # |-|B|-|
+        # |S|-|-|
+        # White piece at S can jump up and right
+        self.game.board.arrange_board({
+            11: {
+                "color": "white",
+                "type" : "man",
+            },
+            8: {
+                "color": "black",
+                "type" : "man",
+            },
+        })
+
+        # Peek white from location 11, to the right - should see a black piece
+        peek_item = self.game.board.peek(
+            location = 11,
+            spaces = 1,
+            direction = "blackright"
+        )
+        self.assertEqual(
+            peek_item,
+            {
+                "offboard": False,
+                "empty": False,
+                "color": "Black",
+                "type": "Man",
+            }
+        )
+
+        # Peek white from location 11, to the left - should see an empty square
+        peek_item = self.game.board.peek(
+            location = 11,
+            spaces = 1,
+            direction = "blackleft"
+        )
+        self.assertEqual(
+            peek_item,
+            {
+                "offboard": False,
+                "empty": True,
+                "color": "",
+                "type": "",
+            }
+        )
+
+        # Peek black from location 8, to the left - should see a white piece square
+        peek_item = self.game.board.peek(
+            location = 8,
+            spaces = 1,
+            direction = "whiteleft"
+        )
+        self.assertEqual(
+            peek_item,
+            {
+                "offboard": False,
+                "empty": False,
+                "color": "White",
+                "type": "Man",
+            }
+        )
+
+        # Peek white from location 4 - should get an offboard location
+        peek_item = self.game.board.peek(
+            location = 4,
+            spaces = 1,
+            direction = "blackleft"
+        )
+        self.assertEqual(
+            peek_item,
+            {
+                "offboard": True,
+                "empty": False,
+                "color": "",
+                "type": "",
+            }
+        )
+
+        # Peek white from location 11, 3 spaces - should get an offboard location
+        peek_item = self.game.board.peek(
+            location = 11,
+            spaces = 3,
+            direction = "blackright"
+        )
+        self.assertEqual(
+            peek_item,
+            {
+                "offboard": True,
+                "empty": False,
+                "color": "",
+                "type": "",
+            }
+        )
+
+    def test_white_jump_1(self):
+        # |-|-|L|
+        # |-|B|-|
+        # |S|-|-|
+        # White piece at S can jump up and right
+        self.game.board.arrange_board({
+            11: {
+                "color": "white",
+                "type" : "man",
+            },
+            8: {
+                "color": "black",
+                "type" : "man",
+            },
+        })
+
+        # Ask the White team for all moves
+        legal_moves = self.game.get_current_legal_moves()
+
+        # The piece MUST jump
+        expected_moves = [{
+            "start": 11,
+            "jumps_over": [8],
+            "lands": [4],
+            "end": 4,
+        }]
+
+        self.assertEqual(expected_moves, legal_moves)
 
 # |-|-|-|
 # |-|W|-|

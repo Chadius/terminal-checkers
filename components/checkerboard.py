@@ -130,8 +130,8 @@ class Checkerboard(object):
 
     def location_to_coordinates(self, location):
         """Convert location to coordinates.
-        Row is 1-8 (Row 1 is the top of Black's side.)
-        Column is 1-8 (Column 1 is on the left side.)
+        row is 1-8 (Row 1 is on Black's side, Row 8 is on White's side)
+        column is 1-8
         """
 
         # If the location is not between 1-32, raise an exception
@@ -219,6 +219,70 @@ class Checkerboard(object):
         # Remove from the board.
         del[self.pieces_by_location[location]]
         return True
+
+    def peek(self, location, direction, spaces):
+        """Starting from location, move in a direction by a number of spaces and return the piece found there.
+
+        location = starting location
+        spaces = number of spaces to look ahead
+        direction = "blackright", "blackleft", "whiteright" or "whiteleft". This assumes Black is on top and White is on the bottom.
+
+        returns a dict.
+        offboard: True if the peek location is off the board in an invalid position.
+        empty: True if the peek location is valid but no piece is there.
+        color: checker color.
+        type: "Man" or "King"
+        """
+
+        peek_description = {
+            "offboard": False,
+            "empty": False,
+            "color": "",
+            "type": "",
+        }
+
+        # Validate the direction.
+        vertical = {
+            "blackright": 1,
+            "blackleft": 1,
+            "whitright": -1,
+            "whiteleft": -1,
+        }
+        look_up = vertical[direction]
+
+        horizontal = {
+            "blackright": 1,
+            "blackleft": -1,
+            "whiteright": 1,
+            "whiteleft": -1,
+        }
+        look_right = horizontal[direction]
+
+        # Convert the location to coordinates.
+        coordinates = self.location_to_coordinates(location)
+
+        # Based on the direction, change coordinates to the number of squares.
+        coordinates["row"] += look_up * spaces
+        coordinates["column"] += look_right * spaces
+
+        # Convert back to a location.
+        new_location = self.coordinates_to_location(coordinates)
+
+        # Indicate if it's offscreen
+        if new_location == None:
+            peek_description["offboard"] = True
+            return peek_description
+
+        # If there is a piece, fill in the color and type.
+        all_pieces = self.get_all_pieces_by_location()
+        if new_location in all_pieces:
+            peek_description["color"] = all_pieces[new_location]["color"]
+            peek_description["type"] = all_pieces[new_location]["type"]
+            return peek_description
+
+        # Otherwise return an empty space.
+        peek_description["empty"] = True
+        return peek_description
 
 class CheckerGame(object):
     """A Game of Checkers tracks the board, the turn and determines valid moves.
