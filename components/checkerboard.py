@@ -348,11 +348,43 @@ class CheckerGame(object):
         # Get the piece at the given location
         color = checker_info["color"]
         checker_type = checker_info["type"]
+        start_location = checker_info["location"]
 
-        # Get all of its neighboring locations.
-        neighbors = []
-        # Get the row and column of the location
-        checker_coord = self.board.location_to_coordinates(checker_info["location"])
+        # Based on the color
+        spots_to_check = []
+        if color == "White":
+            spots_to_check.append({
+                "location" : start_location,
+                "direction" : "blackright",
+                "spaces": 1,
+            })
+            spots_to_check.append({
+                "location" : start_location,
+                "direction" : "blackleft",
+                "spaces": 1,
+            })
+
+        if color == "Black":
+            spots_to_check.append({
+                "location" : start_location,
+                "direction" : "whiteright",
+                "spaces": 1,
+            })
+            spots_to_check.append({
+                "location" : start_location,
+                "direction" : "whiteleft",
+                "spaces": 1,
+            })
+
+        # While there are spaces to check on, run this Depth First Search.
+        ## Pop the move.
+        ## Peek at what's on the space the piece would move to.
+        ## if it's offboard, stop
+        ## if it's empty, add it to the list of possible destinations
+        ## if the space is occupied, and it's the same color, stop
+        ## if the space is occupied, and it's a different color
+        ### Peek another space ahead.
+        ### If the space ahead is empty (and on the board) that means you can jump!
 
         # Men can only move forward.
         if color == "White":
