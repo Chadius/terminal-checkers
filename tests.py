@@ -534,6 +534,7 @@ class JumpingPieceTests(TestCase):
                 "empty": False,
                 "color": "Black",
                 "type": "Man",
+                "location": 8,
             }
         )
 
@@ -550,6 +551,7 @@ class JumpingPieceTests(TestCase):
                 "empty": True,
                 "color": "",
                 "type": "",
+                "location": 7,
             }
         )
 
@@ -566,6 +568,7 @@ class JumpingPieceTests(TestCase):
                 "empty": False,
                 "color": "White",
                 "type": "Man",
+                "location": 11,
             }
         )
 
@@ -582,6 +585,7 @@ class JumpingPieceTests(TestCase):
                 "empty": False,
                 "color": "",
                 "type": "",
+                "location": None,
             }
         )
 
@@ -598,6 +602,7 @@ class JumpingPieceTests(TestCase):
                 "empty": False,
                 "color": "",
                 "type": "",
+                "location": None,
             }
         )
 

@@ -239,13 +239,14 @@ class Checkerboard(object):
             "empty": False,
             "color": "",
             "type": "",
+            "location": None,
         }
 
         # Validate the direction.
         vertical = {
             "blackright": 1,
             "blackleft": 1,
-            "whitright": -1,
+            "whiteright": -1,
             "whiteleft": -1,
         }
         look_up = vertical[direction]
@@ -272,6 +273,8 @@ class Checkerboard(object):
         if new_location == None:
             peek_description["offboard"] = True
             return peek_description
+
+        peek_description["location"] = new_location
 
         # If there is a piece, fill in the color and type.
         all_pieces = self.get_all_pieces_by_location()
@@ -340,7 +343,7 @@ class CheckerGame(object):
         # Return all results.
         return all_legal_moves
 
-    def get_legal_moves_for_checker(self, checker_info, all_pieces_info):
+    def get_legal_moves_for_checker(self, checker_info, all_pieces_info, previous_jump_direction = None):
         """Looks at the legal moves for the checker at the given location.
         Returns a list of dicts. See get_current_legal_moves for a description.
         """
@@ -349,86 +352,50 @@ class CheckerGame(object):
         color = checker_info["color"]
         checker_type = checker_info["type"]
         start_location = checker_info["location"]
+        checker_desc = color + " " + checker_type
 
-        # Based on the color
-        spots_to_check = []
-        if color == "White":
-            spots_to_check.append({
-                "location" : start_location,
-                "direction" : "blackright",
-                "spaces": 1,
-            })
-            spots_to_check.append({
-                "location" : start_location,
-                "direction" : "blackleft",
-                "spaces": 1,
-            })
+        # Generate directions for this piece.
+        directions_by_description = {
+            "White Man": ['blackright', 'blackleft'],
+            "White King": ['blackright', 'blackleft', 'whiteright', 'whiteleft'],
+            "Black Man": ['whiteright', 'whiteleft'],
+            "Black King": ['whiteright', 'whiteleft', 'blackright', 'blackleft', ]
+        }
 
-        if color == "Black":
-            spots_to_check.append({
-                "location" : start_location,
-                "direction" : "whiteright",
-                "spaces": 1,
-            })
-            spots_to_check.append({
-                "location" : start_location,
-                "direction" : "whiteleft",
-                "spaces": 1,
-            })
+        # Remove any directions you've already jumped from.
+        directions = directions_by_description[checker_desc]
+        directions = [d for d in directions if d != previous_jump_direction]
 
-        # While there are spaces to check on, run this Depth First Search.
-        ## Pop the move.
-        ## Peek at what's on the space the piece would move to.
-        ## if it's offboard, stop
-        ## if it's empty, add it to the list of possible destinations
-        ## if the space is occupied, and it's the same color, stop
-        ## if the space is occupied, and it's a different color
-        ### Peek another space ahead.
-        ### If the space ahead is empty (and on the board) that means you can jump!
-
-        # Men can only move forward.
-        if color == "White":
-            new_row = checker_coord["row"] + 1
-        if color == "Black":
-            new_row = checker_coord["row"] - 1
-        neighbors.append({ "row": new_row, "column": checker_coord["column"] + 1})
-        neighbors.append({ "row": new_row, "column": checker_coord["column"] - 1})
-        # TODO Kings can move forward and backward.
-
-        # Remove any neighbor that are not on the board.
-        on_board_neighbors = []
-        for coord in neighbors:
-            if coord["row"] < 1:
-                continue
-            if coord["column"] < 1:
-                continue
-            if coord["row"] > self.board.rows:
-                continue
-            if coord["column"] > self.board.columns:
-                continue
-            on_board_neighbors.append(coord)
-
-        # For each neighbor, if the space is blank the piece can move there.
-        empty_spaces = []
-        for coord in on_board_neighbors:
-            loc = self.board.coordinates_to_location(coord)
-            if loc in all_pieces_info:
-                continue
-            empty_spaces.append(loc)
-
-        # TODO If the neighbor is occupied by a checker of its own color, it cannot move there.
-        ## TODO Check for jumps!
-
-        # TODO Format the moves.
+        # For each direction
         legal_moves = []
-        for destination in empty_spaces:
-            legal_moves.append({
-                "start": checker_info["location"],
-                "end": destination,
-            })
+        for direction in directions:
+            # Peek 1 square.
+            info = self.board.peek(start_location, direction, 1)
+
+            # If the square is unoccupied and on the board, add this move to the list and move on.
+            if info["empty"] and not info["offboard"]:
+                legal_moves.append({
+                    "start": start_location,
+                    "end": info["location"],
+                })
+
+            # If the square belongs to a different color, we may be able to jump!
+            ## Peek 2 squares away and make sure it's an empty space you can land on.
+            ### We need to check for multiple jumps.
+            ### Recursively call this function, and pass in this direction as the previous jump direction so there is no infinite jump loop.
+            ### Only keep legal actions that have a jump.
+            ### For each recursive jump
+            #### Combine jumps and landings with this jump.
+            #### Start point is start_location
+            #### End point is the end point of the jump
+            #### If there is no jump listing, then create one with the end point
+            #### Append new jump onto current list of jumps
+            #### Append new landing onto current list of landings
+            #### New endpoint is the new landing
+            #### Add new move to list.
+
         return legal_moves
 
-    # TODO CheckersGame contains Checkerboard
 # - knows whose turn it is
 # - knows who won
 # - knows move history
