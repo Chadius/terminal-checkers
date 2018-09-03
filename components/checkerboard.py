@@ -380,19 +380,46 @@ class CheckerGame(object):
                 })
 
             # If the square belongs to a different color, we may be able to jump!
-            ## Peek 2 squares away and make sure it's an empty space you can land on.
-            ### We need to check for multiple jumps.
-            ### Recursively call this function, and pass in this direction as the previous jump direction so there is no infinite jump loop.
-            ### Only keep legal actions that have a jump.
-            ### For each recursive jump
-            #### Combine jumps and landings with this jump.
-            #### Start point is start_location
-            #### End point is the end point of the jump
-            #### If there is no jump listing, then create one with the end point
-            #### Append new jump onto current list of jumps
-            #### Append new landing onto current list of landings
-            #### New endpoint is the new landing
-            #### Add new move to list.
+            if info["color"] != color:
+                # Peek 2 squares away and make sure it's an empty space you can land on.
+                two_square_info = self.board.peek(start_location, direction, 2)
+                if two_square_info["empty"] and not two_square_info["offboard"]:
+                    # We need to check for multiple jumps.
+                    # Recursively call this function, and pass in this direction as the previous jump direction so there is no infinite jump loop.
+                    other_jumps = self.get_legal_moves_for_checker(
+                        checker_info = {
+                            color = checker_info["color"],
+                            checker_type = checker_info["checker_info"],
+                            location = two_square_info["location"],
+                        }
+                    )
+
+                    # Only keep legal actions that have a jump.
+                    other_jumps = [j for j in other_jumps if "jumps" in j]
+
+                    # If there are no other jumps, then add this move as a jump.
+                    initial_jump = {
+                        "start": start_location,
+                        "jump": [ info["location"] ],
+                        "end": two_square_info["location"],
+                    }
+
+                    if not other_jumps:
+                        legal_moves.append(initial_jump)
+
+                    # For each recursive jump
+                    for j in other_jumps:
+                        # Combine jumps and landings with this jump.
+                        # Start point is start_location
+                        # End point is the end point of the jump
+                        # If there is no jump listing, then create one with the end point
+                        # Append new jump onto current list of jumps
+                        # Append new landing onto current list of landings
+                        # New endpoint is the new landing
+                        # Add new move to list.
+                        pass
+
+            # If any moves have a jump in it, you must remove all non-jump moves.
 
         return legal_moves
 
