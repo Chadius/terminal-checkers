@@ -365,47 +365,58 @@ class CheckerGame(object):
         # Remove any directions you've already jumped from.
         directions = directions_by_description[checker_desc]
         directions = [d for d in directions if d != previous_jump_direction]
-
+        print (', '.join(directions)) # TODO
         # For each direction
-        legal_moves = []
+        legal_moves_without_jumps = []
+        legal_moves_with_jumps = []
         for direction in directions:
             # Peek 1 square.
             info = self.board.peek(start_location, direction, 1)
 
             # If the square is unoccupied and on the board, add this move to the list and move on.
             if info["empty"] and not info["offboard"]:
-                legal_moves.append({
+                print ("{loc} is empty, adding to legal moves".format(loc=info["location"])) # TODO
+                legal_moves_without_jumps.append({
                     "start": start_location,
                     "end": info["location"],
                 })
 
             # If the square belongs to a different color, we may be able to jump!
-            if info["color"] != color:
+            if not(info["offboard"] or info["empty"]) and info["color"] != color:
+                print ("{loc} has a different color, maybe I can jump".format(loc=info["location"])) # TODO
                 # Peek 2 squares away and make sure it's an empty space you can land on.
                 two_square_info = self.board.peek(start_location, direction, 2)
+                print ("Peeking at landing spot: {spot}".format(spot=two_square_info)) # TODO
                 if two_square_info["empty"] and not two_square_info["offboard"]:
+                    print ("Destination is empty and on the board. I need to check for multiple jumps.") #TODO
+
                     # We need to check for multiple jumps.
                     # Recursively call this function, and pass in this direction as the previous jump direction so there is no infinite jump loop.
                     other_jumps = self.get_legal_moves_for_checker(
                         checker_info = {
-                            color = checker_info["color"],
-                            checker_type = checker_info["checker_info"],
-                            location = two_square_info["location"],
-                        }
+                            "color" : color,
+                            "type" : checker_type,
+                            "location" : two_square_info["location"],
+                        },
+                        all_pieces_info = all_pieces_info,
+                        previous_jump_direction = direction,
                     )
 
                     # Only keep legal actions that have a jump.
                     other_jumps = [j for j in other_jumps if "jumps" in j]
 
                     # If there are no other jumps, then add this move as a jump.
+                    print ("How many other jumps are there? {num}".format(num=len(other_jumps))) # TODO
+
                     initial_jump = {
                         "start": start_location,
-                        "jump": [ info["location"] ],
+                        "jumps_over": [ info["location"] ],
+                        "lands" : [ two_square_info["location"] ],
                         "end": two_square_info["location"],
                     }
 
                     if not other_jumps:
-                        legal_moves.append(initial_jump)
+                        legal_moves_with_jumps.append(initial_jump)
 
                     # For each recursive jump
                     for j in other_jumps:
@@ -419,9 +430,11 @@ class CheckerGame(object):
                         # Add new move to list.
                         pass
 
-            # If any moves have a jump in it, you must remove all non-jump moves.
+        # If any moves have a jump in it, you must remove all non-jump moves.
+        if len(legal_moves_with_jumps) > 0:
+            return legal_moves_with_jumps
 
-        return legal_moves
+        return legal_moves_without_jumps
 
 # - knows whose turn it is
 # - knows who won
