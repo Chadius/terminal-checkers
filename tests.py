@@ -608,7 +608,7 @@ class JumpingPieceTests(TestCase):
 
     def test_white_jump_right(self):
         # |-|-|L|
-        # |-|B|-|
+        # |-|b|-|
         # |S|-|-|
         # White piece at S can jump up and right
         self.game.board.arrange_board({
@@ -637,7 +637,7 @@ class JumpingPieceTests(TestCase):
 
     def test_white_jump_left(self):
         # |L|-|-|
-        # |-|B|-|
+        # |-|b|-|
         # |-|-|S|
         # White piece at S can jump up and left.
         self.game.board.arrange_board({
@@ -666,7 +666,7 @@ class JumpingPieceTests(TestCase):
 
     def test_black_jump(self):
         # |S|-|-|
-        # |-|W|-|
+        # |-|w|-|
         # |-|-|L|
         # Black piece at S can jump.
         self.game.board.arrange_board({
@@ -696,7 +696,7 @@ class JumpingPieceTests(TestCase):
 
     def test_white_cannot_jump_same_color(self):
         # |-|-|-|
-        # |-|W|-|
+        # |-|w|-|
         # |S|-|-|
         # White piece at S cannot jump, the jumped piece is the same color.
         self.game.board.arrange_board({
@@ -736,7 +736,7 @@ class JumpingPieceTests(TestCase):
 
     def test_white_cannot_jump_offboard_column(self):
         # |-|-|-|
-        # |-|-|B|
+        # |-|-|b|
         # |-|S|-|
         # S piece cannot jump because they would land in an offboard column.
         self.game.board.arrange_board({
@@ -764,7 +764,7 @@ class JumpingPieceTests(TestCase):
         self.assertEqual(expected_moves, legal_moves)
 
     def test_white_cannot_jump_offboard_row(self):
-        # |-|B|-|
+        # |-|b|-|
         # |S|-|-|
         # |-|-|-|
         # S piece cannot jump because they would land in an invalid row.
@@ -793,8 +793,8 @@ class JumpingPieceTests(TestCase):
         self.assertEqual(expected_moves, legal_moves)
 
     def test_white_cannot_jump_landing_blocked(self):
-        # |-|-|B|
-        # |-|B|-|
+        # |-|-|b|
+        # |-|b|-|
         # |S|-|-|
         # S piece cannot jump because the landing is blocked.
         self.game.board.arrange_board({
@@ -825,9 +825,9 @@ class JumpingPieceTests(TestCase):
 
     def test_white_can_jump_multiple_times(self):
         # |-|-|-|-|L|
-        # |-|-|-|B|-|
+        # |-|-|-|b|-|
         # |-|-|l|-|-|
-        # |-|B|-|-|-|
+        # |-|b|-|-|-|
         # |S|-|-|-|-|
         # Multijumps are possible. S will jump to l and then L.
         self.game.board.arrange_board({
@@ -857,3 +857,97 @@ class JumpingPieceTests(TestCase):
         }]
 
         self.assertEqual(expected_moves, legal_moves)
+
+    def test_white_can_choose_jumps(self):
+        # |1|-|-|-|2|
+        # |-|b|-|b|-|
+        # |-|-|S|-|-|
+        # A white piece can choose between multiple possible jumps.
+
+        self.game.board.arrange_board({
+            11: {
+                "color": "white",
+                "type" : "man",
+            },
+            7: {
+                "color": "black",
+                "type" : "man",
+            },
+            8: {
+                "color": "black",
+                "type" : "man",
+            },
+        })
+
+        # Ask the White team for all moves
+        legal_moves = self.game.get_current_legal_moves()
+
+        # The White piece has 2 potential moves. Each of them are a jump.
+        expected_moves = [
+            {
+                "start": 11,
+                "jumps_over": [7],
+                "lands": [2],
+                "end": 2,
+            },
+            {
+                "start": 11,
+                "jumps_over": [8],
+                "lands": [4],
+                "end": 4,
+            },
+        ]
+
+        self.assertEqual(len(expected_moves), len(legal_moves))
+        for expected_move in expected_moves:
+            self.assertTrue(expected_move in legal_moves)
+
+    def test_white_can_choose_branching_multijump(self):
+        # |1|-|-|-|2|
+        # |-|b|-|b|-|
+        # |-|-|l|-|-|
+        # |-|b|-|-|-|
+        # |S|-|-|-|-|
+        # A piece can make different decisions during a multijump.
+        self.game.board.arrange_board({
+            18: {
+                "color": "white",
+                "type" : "man",
+            },
+            15: {
+                "color": "black",
+                "type" : "man",
+            },
+            8: {
+                "color": "black",
+                "type" : "man",
+            },
+            7: {
+                "color": "black",
+                "type" : "man",
+            },
+        })
+
+        # Ask the White team for all moves
+        legal_moves = self.game.get_current_legal_moves()
+
+        # The White piece must jump over the black piece at 15.
+        # When it lands on 11, it must choose between jumping over 7 or 8.
+        expected_moves = [
+            {
+                "start": 18,
+                "jumps_over": [15, 8],
+                "lands": [11, 4],
+                "end": 4,
+            },
+            {
+                "start": 18,
+                "jumps_over": [15, 7],
+                "lands": [11, 2],
+                "end": 2,
+            },
+        ]
+
+        self.assertEqual(len(expected_moves), len(legal_moves))
+        for expected_move in expected_moves:
+            self.assertTrue(expected_move in legal_moves)

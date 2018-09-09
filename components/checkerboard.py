@@ -374,8 +374,6 @@ class CheckerGame(object):
         start_location = checker_info["location"]
         checker_desc = color + " " + checker_type
 
-        print ("Starting location: {loc}".format(loc=start_location)) # TODO
-
         # Generate directions for this piece.
         directions_by_description = {
             "White Man": ['blackright', 'blackleft'],
@@ -390,7 +388,7 @@ class CheckerGame(object):
         if previous_jump_direction:
             opposite_jump_direction = self.board.get_opposite_direction(previous_jump_direction)
             directions = [d for d in directions if d != opposite_jump_direction]
-        print (', '.join(directions)) # TODO
+
         # For each direction
         legal_moves_without_jumps = []
         legal_moves_with_jumps = []
@@ -400,7 +398,6 @@ class CheckerGame(object):
 
             # If the square is unoccupied and on the board, add this move to the list and move on.
             if info["empty"] and not info["offboard"]:
-                print ("{loc} is empty, adding to legal moves".format(loc=info["location"])) # TODO
                 legal_moves_without_jumps.append({
                     "start": start_location,
                     "end": info["location"],
@@ -408,13 +405,10 @@ class CheckerGame(object):
 
             # If the square belongs to a different color, we may be able to jump!
             if not(info["offboard"] or info["empty"]) and info["color"] != color:
-                print ("{loc} has a different color, maybe I can jump {dir}".format(loc=info["location"], dir=direction)) # TODO
                 # Peek 2 squares away and make sure it's an empty space you can land on.
                 two_square_info = self.board.peek(start_location, direction, 2)
-                print ("Peeking at landing spot: {spot}".format(spot=two_square_info)) # TODO
-                if two_square_info["empty"] and not two_square_info["offboard"]:
-                    print ("Destination is empty and on the board. I need to check for multiple jumps.") #TODO
 
+                if two_square_info["empty"] and not two_square_info["offboard"]:
                     # We need to check for multiple jumps.
                     # Recursively call this function, and pass in this direction as the previous jump direction so there is no infinite jump loop.
                     other_jumps = self.get_legal_moves_for_checker(
@@ -431,9 +425,6 @@ class CheckerGame(object):
                     other_jumps = [j for j in other_jumps if "jumps_over" in j]
 
                     # If there are no other jumps, then add this move as a jump.
-                    print ("Current Scope: Starting location: {loc}".format(loc=start_location)) # TODO
-                    print ("How many other jumps are there? {num}".format(num=len(other_jumps))) # TODO
-
                     initial_jump = {
                         "start": start_location,
                         "jumps_over": [ info["location"] ],
@@ -471,10 +462,7 @@ class CheckerGame(object):
 
         # If any moves have a jump in it, you must remove all non-jump moves.
         if len(legal_moves_with_jumps) > 0:
-            print (legal_moves_with_jumps)
             return legal_moves_with_jumps
-
-        print (legal_moves_without_jumps)
         return legal_moves_without_jumps
 
 # - knows whose turn it is
